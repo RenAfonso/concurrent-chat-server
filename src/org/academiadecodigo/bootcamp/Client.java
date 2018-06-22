@@ -58,7 +58,7 @@ public class Client {
                         if ((line = in.readLine()) != null) {
                             if (line.equals("logout")) {
                                 System.out.println("logging out");
-                                connected = false;
+                                //connected = false;
                             } else {
                                 System.out.println("Server reply: " + line);
                             }
