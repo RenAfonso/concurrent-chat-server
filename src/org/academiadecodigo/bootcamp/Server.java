@@ -66,7 +66,7 @@ public class Server {
 
     }
 
-    void sendAll(String message) {
+    synchronized void sendAll(String message) {
 
         for (int i = 0; i < serverWorkerList.size(); i++) {
             serverWorkerList.get(i).send(message);
@@ -94,6 +94,7 @@ public class Server {
                 try {
                     if ((line = in.readLine()) != null) {
                         sendAll(line);
+
                     }
 
                 } catch (IOException e) {
