@@ -20,9 +20,13 @@ public class Client {
 
     private static final Logger LOGGER = Logger.getLogger(Client.class.getName());
 
+    private String name;
 
+    public Client(String name) {
+        this.name = name;
+    }
 
-    public static void main(String[] args) {
+    public void start() {
 
         Socket clientSocket = null;
 
