@@ -21,15 +21,15 @@ public class Server {
 
     private static final Logger LOGGER = Logger.getLogger(Server.class.getName());
 
-    private final ArrayList<ServerWorker> serverWorkerList = null;
+    private ArrayList<ServerWorker> serverWorkerList;
 
     public Server() {
-
-
+        serverWorkerList = new ArrayList<>();
     }
 
 
     public void start() {
+
 
         ConsoleHandler consoleHandler = new ConsoleHandler();
         LOGGER.addHandler(consoleHandler);
@@ -52,14 +52,12 @@ public class Server {
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
-                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-                ServerWorker serverWorker = new ServerWorker(clientSocket, out, in, this);
-                fixedPool.submit(serverWorker);
+
+                ServerWorker serverWorker = new ServerWorker(clientSocket);
+
                 serverWorkerList.add(serverWorker);
-
-
+                fixedPool.submit(serverWorker);
             }
 
         } catch (IOException e) {
@@ -68,7 +66,7 @@ public class Server {
 
     }
 
-    public void sendAll(String message) {
+    void sendAll(String message) {
 
         for (int i = 0; i < serverWorkerList.size(); i++) {
             serverWorkerList.get(i).send(message);
@@ -81,32 +79,42 @@ public class Server {
         Socket clientSocket;
         PrintWriter out;
         BufferedReader in;
-        Server server;
         String line;
 
-        public ServerWorker(Socket clientSocket, PrintWriter out, BufferedReader in, Server server) {
+        public ServerWorker(Socket clientSocket) {
 
             this.clientSocket = clientSocket;
-            this.out = out;
-            this.in = in;
-            this.server = server;
+
+            buildReader();
         }
 
         @Override
         public void run() {
+            while (true) {
+                try {
+                    if ((line = in.readLine()) != null) {
+                        sendAll(line);
+                    }
 
-            try {
-                if ((line = in.readLine()) != null) {
-                    server.sendAll(line);
+                } catch (IOException e) {
+                    LOGGER.log(Level.WARNING, e.getMessage());
                 }
-
-            } catch (IOException e) {
-                LOGGER.log(Level.WARNING, e.getMessage());
             }
         }
 
         void send(String string) {
             out.println(string);
+        }
+
+        void buildReader() {
+            try {
+                out = new PrintWriter(clientSocket.getOutputStream(), true);
+
+                in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

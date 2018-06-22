@@ -58,17 +58,19 @@ public class Client {
                 public void run() {
                     String line;
 
-                    try {
-                        if ((line = in.readLine()) != null) {
-                            if (line.equals("logout")) {
-                                System.out.println("logging out");
-                                //connected = false;
-                            } else {
-                                System.out.println("Server reply: " + line);
+                    while (true) {
+                        try {
+                            if ((line = in.readLine()) != null) {
+                                if (line.equals("logout")) {
+                                    System.out.println("logging out");
+                                    //connected = false;
+                                } else {
+                                    System.out.println("Server reply: " + line);
+                                }
                             }
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
                 }
             });
@@ -76,7 +78,7 @@ public class Client {
             while (connected) {
                 System.out.println("Type message : ");
                 Scanner messageArg = new Scanner(System.in);
-                String messageToSend = messageArg.next();
+                String messageToSend = messageArg.nextLine();
 
                 out.println(messageToSend);
             }
