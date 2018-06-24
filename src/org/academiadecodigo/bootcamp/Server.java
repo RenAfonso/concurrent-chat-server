@@ -82,12 +82,24 @@ class Server {
             return;
         }
 
-        for (int i = 0; i < serverWorkerList.size(); i++) {
-            if (!stringSplit[0].equals(serverWorkerList.get(i).getName())) {
-                System.out.println(stringSplit[0]);
-                System.out.println(serverWorkerList.get(i).getName());
-                serverWorkerList.get(i).send(message);
+        if(stringSplit[1].equals("setnickname")) {
+            for (int i = 0; i < serverWorkerList.size(); i++) {
+                if (stringSplit[0].equals(serverWorkerList.get(i).getName())) {
+                    continue;
+                }
+                if (!stringSplit[2].equals(serverWorkerList.get(i).getName())) {
+                    continue;
+                }
+                serverWorkerList.get(i).send(stringSplit[3]);
             }
+            return;
+        }
+
+        for (int i = 0; i < serverWorkerList.size(); i++) {
+            if (stringSplit[0].equals(serverWorkerList.get(i).getName())) {
+                continue;
+            }
+            serverWorkerList.get(i).send(message);
         }
     }
 

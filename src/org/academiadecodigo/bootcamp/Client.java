@@ -62,7 +62,6 @@ public class Client {
 
                     System.out.println("You just logged in as: " + getName());
 
-
                     while (connected) {
                         try {
                             if ((line = in.readLine()) != null) {
