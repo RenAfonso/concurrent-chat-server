@@ -30,18 +30,16 @@ public class Client {
 
         Socket clientSocket = null;
 
-        boolean connected = true;
-
         ConsoleHandler consoleHandler = new ConsoleHandler();
         LOGGER.addHandler(consoleHandler);
         consoleHandler.setLevel(Level.ALL);
         LOGGER.setLevel(Level.ALL);
 
-        System.out.println("Destination host?\n");
+        System.out.println("Destination host?");
         Scanner addressArg = new Scanner(System.in);
         String hostName = addressArg.next();
 
-        System.out.println("Destination port?\n");
+        System.out.println("Destination port?");
         int portNumber = addressArg.nextInt();
 
         try {
@@ -51,22 +49,24 @@ public class Client {
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
+
+
             ExecutorService singleExecutor = Executors.newSingleThreadExecutor();
 
             singleExecutor.submit(new Runnable() {
+                boolean connected = true;
+
                 @Override
                 public void run() {
                     String line;
 
-                    while (true) {
+                    System.out.println("You just logged in as: " + getName());
+
+
+                    while (connected) {
                         try {
                             if ((line = in.readLine()) != null) {
-                                if (line.equals("logout")) {
-                                    System.out.println("logging out");
-                                    //connected = false;
-                                } else {
-                                    System.out.println("Server reply: " + line);
-                                }
+                                    System.out.println(line);
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -75,10 +75,11 @@ public class Client {
                 }
             });
 
-            while (connected) {
-                System.out.println("Type message : ");
+            out.println("setnickname:" + getName());
+
+            while (true) {
                 Scanner messageArg = new Scanner(System.in);
-                String messageToSend = messageArg.nextLine();
+                String messageToSend = getName() + ":" + messageArg.nextLine();
 
                 out.println(messageToSend);
             }
@@ -102,5 +103,9 @@ public class Client {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public String getName() {
+        return name;
     }
 }

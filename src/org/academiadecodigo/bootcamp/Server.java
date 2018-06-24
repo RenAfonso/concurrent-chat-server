@@ -17,30 +17,30 @@ import java.util.logging.Logger;
 /**
  * Created by codecadet on 22/06/2018.
  */
-public class Server {
+class Server {
 
     private static final Logger LOGGER = Logger.getLogger(Server.class.getName());
 
     private ArrayList<ServerWorker> serverWorkerList;
 
-    public Server() {
+    Server() {
         serverWorkerList = new ArrayList<>();
     }
 
 
-    public void start() {
-
+    void start() {
 
         ConsoleHandler consoleHandler = new ConsoleHandler();
         LOGGER.addHandler(consoleHandler);
         consoleHandler.setLevel(Level.ALL);
         LOGGER.setLevel(Level.ALL);
 
-        System.out.println("Port?\n");
+        System.out.println("Port?");
 
         Scanner scanner = new Scanner(System.in);
         int portNumber = scanner.nextInt();
 
+        Socket clientSocket = null;
 
         System.out.println("Waiting for clients");
 
@@ -48,11 +48,10 @@ public class Server {
 
             ServerSocket serverSocket = new ServerSocket(portNumber);
 
-            ExecutorService fixedPool = Executors.newFixedThreadPool(50);
+            ExecutorService fixedPool = Executors.newFixedThreadPool(500);
 
             while (true) {
-                Socket clientSocket = serverSocket.accept();
-
+                clientSocket = serverSocket.accept();
 
                 ServerWorker serverWorker = new ServerWorker(clientSocket);
 
@@ -68,8 +67,37 @@ public class Server {
 
     synchronized void sendAll(String message) {
 
+        String[] stringSplit = message.split(":");
+
+        if(stringSplit[1].equals("pvtm")) {
+            for (int i = 0; i < serverWorkerList.size(); i++) {
+                if (stringSplit[0].equals(serverWorkerList.get(i).getName())) {
+                    continue;
+                }
+                if (!stringSplit[2].equals(serverWorkerList.get(i).getName())) {
+                    continue;
+                }
+                serverWorkerList.get(i).send(stringSplit[3]);
+            }
+            return;
+        }
+
         for (int i = 0; i < serverWorkerList.size(); i++) {
-            serverWorkerList.get(i).send(message);
+            if (!stringSplit[0].equals(serverWorkerList.get(i).getName())) {
+                System.out.println(stringSplit[0]);
+                System.out.println(serverWorkerList.get(i).getName());
+                serverWorkerList.get(i).send(message);
+            }
+        }
+    }
+
+    private static void closeSocket(Socket clientSocket) {
+        try {
+            clientSocket.close();
+        } catch (NullPointerException e) {
+            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -80,6 +108,9 @@ public class Server {
         PrintWriter out;
         BufferedReader in;
         String line;
+        String name;
+
+        boolean connected = true;
 
         public ServerWorker(Socket clientSocket) {
 
@@ -90,17 +121,26 @@ public class Server {
 
         @Override
         public void run() {
-            while (true) {
+            while (connected) {
                 try {
                     if ((line = in.readLine()) != null) {
-                        sendAll(line);
+                        if (line.startsWith("logout")) {
+                            connected = false;
+                        }
+                        if (line.startsWith("setnickname")) {
+                            String[] stringSplit = line.split(":");
+                            setName(stringSplit[1]);
+                        }
 
+                        sendAll(line);
                     }
 
                 } catch (IOException e) {
                     LOGGER.log(Level.WARNING, e.getMessage());
                 }
             }
+
+            closeSocket(clientSocket);
         }
 
         void send(String string) {
@@ -116,6 +156,24 @@ public class Server {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+
+        void closeSocket(Socket clientSocket) {
+            try {
+                clientSocket.close();
+            } catch (NullPointerException e) {
+                System.out.println(e.getMessage());
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
         }
     }
 }
