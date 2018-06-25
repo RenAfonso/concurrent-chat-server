@@ -35,10 +35,10 @@ class Server {
         consoleHandler.setLevel(Level.ALL);
         LOGGER.setLevel(Level.ALL);
 
-        System.out.println("Port?");
+        /*System.out.println("Port?");
 
         Scanner scanner = new Scanner(System.in);
-        int portNumber = scanner.nextInt();
+        int portNumber = scanner.nextInt();*/
 
         Socket clientSocket = null;
 
@@ -46,7 +46,7 @@ class Server {
 
         try {
 
-            ServerSocket serverSocket = new ServerSocket(portNumber);
+            ServerSocket serverSocket = new ServerSocket(5000);
 
             ExecutorService fixedPool = Executors.newFixedThreadPool(500);
 
@@ -77,7 +77,7 @@ class Server {
                 if (!stringSplit[2].equals(serverWorkerList.get(i).getName())) {
                     continue;
                 }
-                serverWorkerList.get(i).send(stringSplit[3]);
+                serverWorkerList.get(i).send(stringSplit[0] + ":" + stringSplit[3]);
             }
             return;
         }
@@ -92,6 +92,10 @@ class Server {
                 }
                 serverWorkerList.get(i).send(stringSplit[3]);
             }
+            return;
+        }
+
+        if(stringSplit[0].equals("setnickname")) {
             return;
         }
 

@@ -35,16 +35,16 @@ public class Client {
         consoleHandler.setLevel(Level.ALL);
         LOGGER.setLevel(Level.ALL);
 
-        System.out.println("Destination host?");
+        /*System.out.println("Destination host?");
         Scanner addressArg = new Scanner(System.in);
-        String hostName = addressArg.next();
+        String hostName = addressArg.next();*/
 
-        System.out.println("Destination port?");
-        int portNumber = addressArg.nextInt();
+        /*System.out.println("Destination port?");
+        int portNumber = addressArg.nextInt();*/
 
         try {
 
-            clientSocket = new Socket(hostName, portNumber);
+            clientSocket = new Socket("localhost", 5000);
 
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -62,6 +62,8 @@ public class Client {
 
                     System.out.println("You just logged in as: " + getName());
 
+
+
                     while (connected) {
                         try {
                             if ((line = in.readLine()) != null) {
@@ -73,6 +75,7 @@ public class Client {
                     }
                 }
             });
+
 
             out.println("setnickname:" + getName());
 
