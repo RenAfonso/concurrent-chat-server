@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  */
 public class ServerWorker implements Runnable {
 
-    private Socket clientSocket;
+    private final Socket clientSocket;
     private PrintWriter out;
     private BufferedReader in;
     private String line;
@@ -48,6 +48,7 @@ public class ServerWorker implements Runnable {
                 if ((line = in.readLine()) != null) {
                     if (line.startsWith("logout")) {
                         connected = false;
+                        return;
                     }
                     if (line.startsWith("setnickname")) {
                         String[] stringSplit = line.split(":");

@@ -7,6 +7,9 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.ConsoleHandler;
@@ -20,10 +23,10 @@ class Server {
 
     private static final Logger LOGGER = Logger.getLogger(Server.class.getName());
 
-    private ArrayList<ServerWorker> serverWorkerList;
+    private final List<ServerWorker> serverWorkerList;
 
     Server() {
-        serverWorkerList = new ArrayList<>();
+        serverWorkerList = Collections.synchronizedList(new ArrayList<>());
     }
 
 
@@ -64,31 +67,38 @@ class Server {
 
     }
 
-    synchronized void sendAll(String message) {
+    void sendAll(String message) {
 
-        String[] stringSplit = message.split(":");
+        synchronized (serverWorkerList) {
 
-        if(stringSplit[1].equals("pvtm")) {
-            handlePvtm(stringSplit);
-            return;
-        }
+            String[] stringSplit = message.split(":");
 
-        if(stringSplit[1].equals("setnickname")) {
-            handleSetNickName(stringSplit);
-            return;
-        }
+            if (stringSplit[1].equals("pvtm")) {
+                handlePvtm(stringSplit);
+                return;
+            }
 
-        if(stringSplit[0].equals("setnickname")) {
-            return;
-        }
+            if (stringSplit[1].equals("setnickname")) {
+                handleSetNickName(stringSplit);
+                return;
+            }
 
-        if(stringSplit[1].equals("@online")){
-            handleWho(stringSplit);
-            return;
-        }
+            if (stringSplit[0].equals("setnickname")) {
+                return;
+            }
 
-        for (int i = 0; i < serverWorkerList.size(); i++) {
-            serverWorkerList.get(i).send(message);
+            if (stringSplit[1].equals("@online")) {
+                handleWho(stringSplit);
+                return;
+            }
+
+            if (stringSplit[1].equals("logout")) {
+                handleLogout(stringSplit[0]);
+            }
+
+            for (int i = 0; i < serverWorkerList.size(); i++) {
+                serverWorkerList.get(i).send(message);
+            }
         }
     }
 
@@ -130,6 +140,16 @@ class Server {
         for (int i = 0; i < serverWorkerList.size(); i++) {
             if (sender.equals(serverWorkerList.get(i).getName())) {
                 serverWorkerList.get(i).send(userArray);
+            }
+        }
+    }
+
+    private void handleLogout(String user) {
+
+        for (int i = 0; i < serverWorkerList.size(); i++) {
+            if (user.equals(serverWorkerList.get(i).getName())) {
+                serverWorkerList.get(i).send(user + ":logout");
+                //serverWorkerList.get(i).
             }
         }
     }

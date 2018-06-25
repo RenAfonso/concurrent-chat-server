@@ -93,9 +93,11 @@ public class Client {
 
         } catch (NullPointerException e) {
             LOGGER.log(Level.WARNING, e.getMessage());
+            System.exit(1);
 
         } catch (NoSuchElementException e) {
-            System.out.println(e.getMessage());
+            LOGGER.log(Level.WARNING, e.getMessage());
+            System.exit(1);
 
         } catch (IOException e) {
             LOGGER.log(Level.WARNING, e.getMessage());
