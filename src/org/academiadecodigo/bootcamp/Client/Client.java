@@ -21,6 +21,8 @@ public class Client {
     private static final Logger LOGGER = Logger.getLogger(Client.class.getName());
 
     private String name;
+    private boolean connected = true;
+    private Scanner messageArg;
 
     Client(String name) {
         this.name = name;
@@ -67,12 +69,16 @@ public class Client {
 
                     nickname = getName();
 
-
                     while (connected) {
                         try {
                             if ((line = in.readLine()) != null) {
                                 if (line.startsWith("Your nickname is now ")) {
                                     handleNameChange(line);
+                                }
+                                if (line.startsWith("logout")) {
+                                    System.out.println("logging out");
+                                    connected = false;
+                                    break;
                                 }
                                 System.out.println(line);
                             }
@@ -84,11 +90,16 @@ public class Client {
             });
 
 
-            while (true) {
-                Scanner messageArg = new Scanner(System.in);
+            while (connected) {
+                messageArg = new Scanner(System.in);
                 String messageToSend = getName() + ":" + messageArg.nextLine();
 
                 out.println(messageToSend);
+
+                if (messageToSend.equals(getName() + ":logout")) {
+                    connected = false;
+                    break;
+                }
             }
 
         } catch (NullPointerException e) {
@@ -104,6 +115,7 @@ public class Client {
 
         } finally {
             closeSocket(clientSocket);
+            closeScanner(messageArg);
         }
     }
 
@@ -122,6 +134,10 @@ public class Client {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private void closeScanner(Scanner scanner) {
+            scanner.close();
     }
 
     private String getName() {

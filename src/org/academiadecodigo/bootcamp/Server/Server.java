@@ -1,15 +1,11 @@
 package org.academiadecodigo.bootcamp.Server;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.ConsoleHandler;
@@ -64,7 +60,6 @@ class Server {
         } catch (IOException e) {
             LOGGER.log(Level.WARNING, e.getMessage());
         }
-
     }
 
     void sendAll(String message) {
@@ -148,8 +143,8 @@ class Server {
 
         for (int i = 0; i < serverWorkerList.size(); i++) {
             if (user.equals(serverWorkerList.get(i).getName())) {
-                serverWorkerList.get(i).send(user + ":logout");
-                //serverWorkerList.get(i).
+                serverWorkerList.get(i).send("logout");
+                serverWorkerList.remove(serverWorkerList.get(i));
             }
         }
     }
@@ -163,9 +158,5 @@ class Server {
             System.out.println(e.getMessage());
         }
     }
-
-//SERVER WORKER
-
-
 }
 

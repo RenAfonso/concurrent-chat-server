@@ -46,10 +46,6 @@ public class ServerWorker implements Runnable {
         while (connected) {
             try {
                 if ((line = in.readLine()) != null) {
-                    if (line.startsWith("logout")) {
-                        connected = false;
-                        return;
-                    }
                     if (line.startsWith("setnickname")) {
                         String[] stringSplit = line.split(":");
                         setName(stringSplit[1]);
@@ -63,7 +59,7 @@ public class ServerWorker implements Runnable {
             }
         }
 
-        closeSocket(clientSocket);
+        closeSocket();
     }
 
     void send(String string) {
@@ -81,7 +77,7 @@ public class ServerWorker implements Runnable {
         }
     }
 
-    private void closeSocket(Socket clientSocket) {
+    public void closeSocket() {
         try {
             clientSocket.close();
         } catch (NullPointerException e) {
