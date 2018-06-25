@@ -62,7 +62,7 @@ public class Client {
 
                     System.out.println("You just logged in as: " + getName());
 
-
+                    out.println("setnickname:" + getName());
 
                     while (connected) {
                         try {
@@ -76,8 +76,6 @@ public class Client {
                 }
             });
 
-
-            out.println("setnickname:" + getName());
 
             while (true) {
                 Scanner messageArg = new Scanner(System.in);
