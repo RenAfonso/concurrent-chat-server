@@ -1,4 +1,4 @@
-package org.academiadecodigo.bootcamp;
+package org.academiadecodigo.bootcamp.Server;
 
 /**
  * Created by codecadet on 22/06/2018.

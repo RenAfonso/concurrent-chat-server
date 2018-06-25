@@ -1,4 +1,4 @@
-package org.academiadecodigo.bootcamp;
+package org.academiadecodigo.bootcamp.Client;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,11 +22,11 @@ public class Client {
 
     private String name;
 
-    public Client(String name) {
+    Client(String name) {
         this.name = name;
     }
 
-    public void start() {
+    void start() {
 
         Socket clientSocket = null;
 
@@ -55,6 +55,7 @@ public class Client {
 
             singleExecutor.submit(new Runnable() {
                 boolean connected = true;
+                String nickname;
 
                 @Override
                 public void run() {
@@ -64,10 +65,16 @@ public class Client {
 
                     out.println("setnickname:" + getName());
 
+                    nickname = getName();
+
+
                     while (connected) {
                         try {
                             if ((line = in.readLine()) != null) {
-                                    System.out.println(line);
+                                if (line.startsWith("Your nickname is now ")) {
+                                    handleNameChange(line);
+                                }
+                                System.out.println(line);
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -86,26 +93,40 @@ public class Client {
 
         } catch (NullPointerException e) {
             LOGGER.log(Level.WARNING, e.getMessage());
+
         } catch (NoSuchElementException e) {
             System.out.println(e.getMessage());
+
         } catch (IOException e) {
             LOGGER.log(Level.WARNING, e.getMessage());
+
         } finally {
             closeSocket(clientSocket);
         }
     }
 
-    private static void closeSocket(Socket clientSocket) {
+    private void handleNameChange(String line) {
+        String[] nickArray = line.split(" ");
+        setName(nickArray[4]);
+    }
+
+    private void closeSocket(Socket clientSocket) {
         try {
             clientSocket.close();
+
         } catch (NullPointerException e) {
             System.out.println(e.getMessage());
+
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    public String getName() {
+    private String getName() {
         return name;
+    }
+
+    private void setName(String name) {
+        this.name = name;
     }
 }
