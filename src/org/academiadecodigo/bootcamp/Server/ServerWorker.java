@@ -59,7 +59,7 @@ public class ServerWorker implements Runnable {
             }
         }
 
-        closeSocket();
+        //closeSocket();
     }
 
     void send(String string) {

@@ -89,6 +89,7 @@ class Server {
 
             if (stringSplit[1].equals("logout")) {
                 handleLogout(stringSplit[0]);
+                return;
             }
 
             for (int i = 0; i < serverWorkerList.size(); i++) {
@@ -145,7 +146,9 @@ class Server {
             if (user.equals(serverWorkerList.get(i).getName())) {
                 serverWorkerList.get(i).send("logout");
                 serverWorkerList.remove(serverWorkerList.get(i));
+                continue;
             }
+            serverWorkerList.get(i).send(user + " logged out.");
         }
     }
 
