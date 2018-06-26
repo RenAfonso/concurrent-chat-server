@@ -7,7 +7,7 @@ public class MarianaMain {
 
     public static void main(String[] args) {
 
-        Client mariana = new Client("Mariana");
+        Client mariana = new Client();
 
         mariana.start();
     }

@@ -78,10 +78,6 @@ class Server {
                 return;
             }
 
-            if (stringSplit[0].equals("setnickname")) {
-                return;
-            }
-
             if (stringSplit[1].equals("@online")) {
                 handleWho(stringSplit);
                 return;

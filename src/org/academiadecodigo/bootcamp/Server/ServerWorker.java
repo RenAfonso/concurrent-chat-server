@@ -46,12 +46,14 @@ public class ServerWorker implements Runnable {
         while (connected) {
             try {
                 if ((line = in.readLine()) != null) {
+                    System.out.println(line);
                     if (line.startsWith("setnickname")) {
                         String[] stringSplit = line.split(":");
                         setName(stringSplit[1]);
+                        continue;
                     }
 
-                    server.sendAll(line);
+                    server.sendAll(name + ":" + line);
                 }
 
             } catch (IOException e) {

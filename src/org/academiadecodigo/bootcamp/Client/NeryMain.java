@@ -7,7 +7,7 @@ public class NeryMain {
 
     public static void main(String[] args) {
 
-        Client nery = new Client("Nery");
+        Client nery = new Client();
 
         nery.start();
     }

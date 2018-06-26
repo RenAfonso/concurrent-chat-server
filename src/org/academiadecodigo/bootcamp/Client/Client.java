@@ -20,13 +20,8 @@ public class Client {
 
     private static final Logger LOGGER = Logger.getLogger(Client.class.getName());
 
-    private String name;
     private boolean connected = true;
     private Scanner messageArg;
-
-    Client(String name) {
-        this.name = name;
-    }
 
     void start() {
 
@@ -57,28 +52,17 @@ public class Client {
 
             singleExecutor.submit(new Runnable() {
                 boolean connected = true;
-                String nickname;
 
                 @Override
                 public void run() {
                     String line;
 
-                    System.out.println("You just logged in as: " + getName());
-
-                    out.println("setnickname:" + getName());
-
-                    nickname = getName();
-
                     while (connected) {
                         try {
                             if ((line = in.readLine()) != null) {
-                                if (line.startsWith("Your nickname is now ")) {
-                                    handleNameChange(line);
-                                }
                                 if (line.startsWith("logout")) {
                                     System.out.println("logging out");
                                     connected = false;
-                                    break;
                                 }
                                 System.out.println(line);
                             }
@@ -89,16 +73,25 @@ public class Client {
                 }
             });
 
+            messageArg = new Scanner(System.in);
+
+            System.out.println("nickname?");
+
+            String nicknameToSend = messageArg.nextLine();
+
+            out.println("setnickname:" + nicknameToSend);
+
+            System.out.println("Your nickname is now " + nicknameToSend);
 
             while (connected) {
-                messageArg = new Scanner(System.in);
-                String messageToSend = getName() + ":" + messageArg.nextLine();
+
+                String messageToSend = messageArg.nextLine();
 
                 out.println(messageToSend);
 
-                if (messageToSend.equals(getName() + ":logout")) {
+                if (messageToSend.equals("logout")) {
                     connected = false;
-                    break;
+                    continue;
                 }
             }
 
@@ -119,11 +112,6 @@ public class Client {
         }
     }
 
-    private void handleNameChange(String line) {
-        String[] nickArray = line.split(" ");
-        setName(nickArray[4]);
-    }
-
     private void closeSocket(Socket clientSocket) {
         try {
             clientSocket.close();
@@ -138,13 +126,5 @@ public class Client {
 
     private void closeScanner(Scanner scanner) {
             scanner.close();
-    }
-
-    private String getName() {
-        return name;
-    }
-
-    private void setName(String name) {
-        this.name = name;
     }
 }
