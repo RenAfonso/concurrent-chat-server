@@ -11,9 +11,6 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Created by codecadet on 25/06/2018.
- */
 public class ServerWorker implements Runnable {
 
     private final Socket clientSocket;
@@ -46,7 +43,7 @@ public class ServerWorker implements Runnable {
         while (connected) {
             try {
                 if ((line = in.readLine()) != null) {
-                    System.out.println(line);
+
                     if (line.startsWith("setnickname")) {
                         String[] stringSplit = line.split(":");
                         setName(stringSplit[1]);
@@ -60,8 +57,6 @@ public class ServerWorker implements Runnable {
                 LOGGER.log(Level.WARNING, e.getMessage());
             }
         }
-
-        //closeSocket();
     }
 
     void send(String string) {
@@ -76,16 +71,6 @@ public class ServerWorker implements Runnable {
 
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    public void closeSocket() {
-        try {
-            clientSocket.close();
-        } catch (NullPointerException e) {
-            System.out.println(e.getMessage());
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
         }
     }
 

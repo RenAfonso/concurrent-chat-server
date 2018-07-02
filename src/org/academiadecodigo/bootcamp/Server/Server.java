@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.ConsoleHandler;
@@ -33,10 +34,10 @@ class Server {
         consoleHandler.setLevel(Level.ALL);
         LOGGER.setLevel(Level.ALL);
 
-        /*System.out.println("Port?");
+        System.out.println("Port?");
 
         Scanner scanner = new Scanner(System.in);
-        int portNumber = scanner.nextInt();*/
+        int portNumber = scanner.nextInt();
 
         Socket clientSocket = null;
 
@@ -44,7 +45,7 @@ class Server {
 
         try {
 
-            ServerSocket serverSocket = new ServerSocket(5000);
+            ServerSocket serverSocket = new ServerSocket(portNumber);
 
             ExecutorService fixedPool = Executors.newFixedThreadPool(500);
 

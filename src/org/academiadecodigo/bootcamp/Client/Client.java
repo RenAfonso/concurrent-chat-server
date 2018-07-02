@@ -32,16 +32,16 @@ public class Client {
         consoleHandler.setLevel(Level.ALL);
         LOGGER.setLevel(Level.ALL);
 
-        /*System.out.println("Destination host?");
+        System.out.println("Destination host?");
         Scanner addressArg = new Scanner(System.in);
-        String hostName = addressArg.next();*/
+        String hostName = addressArg.next();
 
-        /*System.out.println("Destination port?");
-        int portNumber = addressArg.nextInt();*/
+        System.out.println("Destination port?");
+        int portNumber = addressArg.nextInt();
 
         try {
 
-            clientSocket = new Socket("localhost", 5000);
+            clientSocket = new Socket(hostName, portNumber);
 
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
