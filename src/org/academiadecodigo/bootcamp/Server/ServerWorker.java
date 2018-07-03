@@ -47,6 +47,7 @@ public class ServerWorker implements Runnable {
                     if (line.startsWith("setnickname")) {
                         String[] stringSplit = line.split(":");
                         setName(stringSplit[1]);
+                        server.sendAll(stringSplit[1] + ": status online.");
                         continue;
                     }
 
