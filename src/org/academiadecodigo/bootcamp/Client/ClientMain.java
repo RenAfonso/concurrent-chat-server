@@ -3,12 +3,12 @@ package org.academiadecodigo.bootcamp.Client;
 /**
  * Created by codecadet on 22/06/2018.
  */
-public class NeryMain {
+public class ClientMain {
 
     public static void main(String[] args) {
 
-        Client nery = new Client();
+        Client client = new Client();
 
-        nery.start();
+        client.start();
     }
 }
